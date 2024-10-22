@@ -39,7 +39,7 @@ class DynamoStudentsRepository(
         return this.table.scan().items().map { studentMapper.toDomain(it) }
     }
 
-    override fun findById(id: String): Student? {
+    override fun findById(id: Long): Student? {
         logger.info("about to retrieve student for id = $id")
 
         return table.query(
@@ -48,12 +48,11 @@ class DynamoStudentsRepository(
                     .partitionValue(StudentEntity.buildPk(id))
                     .build(),
             ),
-        ).items().map { studentMapper.toDomain(it) }.first()
+        ).items().map { studentMapper.toDomain(it) }.firstOrNull()
     }
 
     override fun update(id: Long, student: Student): Student? {
-        this.table.getItem(StudentEntity().apply { this.pk = id.toString() }) ?: return null
-        val updatedEntity = studentMapper.toEntity(student.copy(id = id))
+        val updatedEntity = studentMapper.toEntity(student)
         this.table.updateItem(updatedEntity)
         return studentMapper.toDomain(updatedEntity)
     }

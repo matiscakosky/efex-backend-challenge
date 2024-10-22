@@ -17,5 +17,5 @@ data class CreateStudentCommand(
     @field:NotNull(message = "phone must be specified")
     val phone: String? = null,
     @field:NotNull(message = "email must be specified")
-    val email: String? = null
+    val email: String? = null,
 )

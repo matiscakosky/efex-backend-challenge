@@ -36,7 +36,7 @@ class StudentEntity(
         private const val PARTITION_KEY_PREFIX = "STUDENT#"
         private const val SORT_KEY_PREFIX = "STUDENT#"
 
-        fun buildPk(pk: String) = "$PARTITION_KEY_PREFIX$pk"
-        fun buildSk(sk: String) = "$SORT_KEY_PREFIX$sk"
+        fun buildPk(pk: Long) = "$PARTITION_KEY_PREFIX$pk"
+        fun buildSk(sk: Long) = "$SORT_KEY_PREFIX$sk"
     }
 }

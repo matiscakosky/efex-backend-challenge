@@ -2,6 +2,7 @@ package com.efex.controllers.v1
 
 
 import com.efex.context.students.application.commands.CreateStudentCommand
+import com.efex.context.students.application.commands.UpdateStudentCommand
 import com.efex.context.students.domain.entities.Student
 import com.efex.context.students.application.services.StudentService
 import io.micronaut.http.HttpResponse
@@ -32,14 +33,14 @@ class StudentController(@Inject val studentService: StudentService) {
     }
 
     @Get("/{id}")
-    fun get(@PathVariable id: String): HttpResponse<Student> {
+    fun get(@PathVariable id: Long): HttpResponse<Student> {
         val student = studentService.getStudentById(id)
         return if (student != null) HttpResponse.ok(student) else HttpResponse.notFound()
     }
 
     @Patch("/{id}")
-    fun update(@PathVariable id: Long, @Body student: Student): HttpResponse<Student> {
-        val updatedStudent = studentService.updateStudent(id, student)
+    fun update(@PathVariable id: Long, @Body command: UpdateStudentCommand): HttpResponse<Student> {
+        val updatedStudent = studentService.updateStudent(id, command)
         return if (updatedStudent != null) HttpResponse.ok(updatedStudent) else HttpResponse.notFound()
     }
 }

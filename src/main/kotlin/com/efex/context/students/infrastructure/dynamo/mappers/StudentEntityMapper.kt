@@ -30,12 +30,12 @@ abstract class StudentEntityMapper {
 
     @Named("buildPk")
     fun buildPk(id: Long): String {
-        return StudentEntity.buildPk(id.toString())
+        return StudentEntity.buildPk(id)
     }
 
     @Named("buildSk")
     fun buildSk(id: Long): String {
-        return StudentEntity.buildSk(id.toString())
+        return StudentEntity.buildSk(id)
     }
 
     @Named("buildId")
