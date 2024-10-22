@@ -21,7 +21,7 @@ class StudentService(
         return studentRepository.findAll()
     }
 
-    fun getStudentById(id: Long): Student? {
+    fun getStudentById(id: String): Student? {
         return studentRepository.findById(id)
     }
 

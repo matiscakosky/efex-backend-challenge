@@ -22,6 +22,10 @@ abstract class StudentEntityMapper {
     )
     abstract fun toEntity(domain: Student): StudentEntity
 
+    @Mappings(
+        Mapping(source = "pk", target = "id", qualifiedByName = ["buildId"]),
+        Mapping(source = "birthDate", target = "dateOfBirth"),
+    )
     abstract fun toDomain(entity: StudentEntity): Student
 
     @Named("buildPk")
@@ -32,5 +36,10 @@ abstract class StudentEntityMapper {
     @Named("buildSk")
     fun buildSk(id: Long): String {
         return StudentEntity.buildSk(id.toString())
+    }
+
+    @Named("buildId")
+    fun buildId(pk: String): Long {
+        return pk.split("#").last().toLong()
     }
 }
