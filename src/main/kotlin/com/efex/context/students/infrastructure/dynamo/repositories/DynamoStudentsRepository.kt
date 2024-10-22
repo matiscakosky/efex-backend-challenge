@@ -7,8 +7,12 @@ import com.efex.context.students.infrastructure.dynamo.mappers.StudentEntityMapp
 import io.micronaut.context.annotation.Property
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
+import software.amazon.awssdk.enhanced.dynamodb.Key
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 
 @Singleton
@@ -18,7 +22,9 @@ class DynamoStudentsRepository(
     private val studentMapper: StudentEntityMapper
 ) : StudentRepository {
 
-
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(StudentRepository::class.java)
+    }
     private val enhancedClient by lazy { DynamoDbEnhancedClient.builder().dynamoDbClient(client).build() }
     private val schema by lazy { TableSchema.fromBean(StudentEntity::class.java) }
     private val table by lazy { enhancedClient.table(tableName, schema) }
@@ -33,9 +39,16 @@ class DynamoStudentsRepository(
         return this.table.scan().items().map { studentMapper.toDomain(it) }
     }
 
-    override fun findById(id: Long): Student? {
-        val entity = this.table.getItem(StudentEntity().apply { this.pk = id.toString() })
-        return entity?.let { studentMapper.toDomain(it) }
+    override fun findById(id: String): Student? {
+        logger.info("about to retrieve student for id = $id")
+
+        return table.query(
+            QueryConditional.keyEqualTo(
+                Key.builder()
+                    .partitionValue(StudentEntity.buildPk(id))
+                    .build(),
+            ),
+        ).items().map { studentMapper.toDomain(it) }.first()
     }
 
     override fun update(id: Long, student: Student): Student? {
