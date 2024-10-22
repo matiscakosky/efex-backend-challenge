@@ -203,8 +203,12 @@ tasks {
 }
 
 tasks {
-    named("build") {
+    named("lintKotlin") {
         dependsOn("formatKotlin")
+    }
+
+    named("build") {
+        dependsOn("lintKotlin")
     }
 }
 
