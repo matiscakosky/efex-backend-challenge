@@ -17,6 +17,7 @@ val kotlinxSerializationVersion = "1.7.3"
 val logbackClassicVersion = "1.5.10"
 val mapstructVersion = "1.6.2"
 val micronautVersion = "4.0.0"
+val jacksonModuleKotlinVersion = "2.14.2"
 //endregion
 
 repositories {
@@ -55,6 +56,7 @@ dependencies {
     // Jackson
     implementation("io.micronaut:micronaut-jackson-databind")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion")
 
     // Micronaut
     implementation("io.micronaut:micronaut-management")
