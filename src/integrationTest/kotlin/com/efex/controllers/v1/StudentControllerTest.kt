@@ -3,40 +3,36 @@ package com.efex.controllers.v1
 import com.efex.config.BaseIntegrationTest
 import com.efex.context.students.application.commands.CreateStudentCommand
 import com.efex.context.students.application.commands.UpdateStudentCommand
-import com.efex.context.students.application.services.StudentService
 import com.efex.context.students.domain.entities.Student
 import com.efex.factories.StudentPersistentFactory
-import com.fasterxml.jackson.module.kotlin.readValue
-import io.micronaut.core.type.Argument
-import io.micronaut.http.HttpHeaders
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
-import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.jvm.optionals.getOrNull
 
 @MicronautTest
 class StudentControllerTest : BaseIntegrationTest() {
-
     @Inject
     private lateinit var studentPersistentFactory: StudentPersistentFactory
 
     @Test
     fun `it should create a student and return status 201 when the request is valid`() {
-        val command = CreateStudentCommand(
-            firstName = "Scarlett",
-            lastName = "Evans",
-            dateOfBirth = LocalDate.parse("2010-05-01"),
-            grade = 5,
-            phone = "+111111111",
-            email = "scarlet@email.com"
-        )
+        val command =
+            CreateStudentCommand(
+                firstName = "Scarlett",
+                lastName = "Evans",
+                dateOfBirth = LocalDate.parse("2010-05-01"),
+                grade = 5,
+                phone = "+111111111",
+                email = "scarlet@email.com",
+            )
 
         val (response, student) = post<Student>("/students", objectMapper.writeValueAsString(command))
 
@@ -48,14 +44,15 @@ class StudentControllerTest : BaseIntegrationTest() {
 
     @Test
     fun `should return 400 when firstName is missing`() {
-        val invalidCommand = CreateStudentCommand(
-            firstName = null,
-            lastName = "Evans",
-            dateOfBirth = LocalDate.parse("2010-05-01"),
-            grade = 5,
-            phone = "+111111111",
-            email = "scarlet@email.com"
-        )
+        val invalidCommand =
+            CreateStudentCommand(
+                firstName = null,
+                lastName = "Evans",
+                dateOfBirth = LocalDate.parse("2010-05-01"),
+                grade = 5,
+                phone = "+111111111",
+                email = "scarlet@email.com",
+            )
 
         try {
             post<Student>("/students", objectMapper.writeValueAsString(invalidCommand))
@@ -69,7 +66,7 @@ class StudentControllerTest : BaseIntegrationTest() {
 
             assertTrue(
                 responseBody.toString().contains("first name must be specified"),
-                "Error message should mention the missing first name"
+                "Error message should mention the missing first name",
             )
         }
     }
@@ -80,10 +77,10 @@ class StudentControllerTest : BaseIntegrationTest() {
         studentPersistentFactory.create(
             id = studentId,
             firstName = "Harry",
-            lastName = "Potter"
+            lastName = "Potter",
         )
 
-        val (getResponse, student) = get<Student>("/students/${studentId}")
+        val (getResponse, student) = get<Student>("/students/$studentId")
 
         assertEquals(HttpStatus.OK, getResponse.status, "Expected 200 OK")
         assertEquals(studentId, student.id)
@@ -101,7 +98,6 @@ class StudentControllerTest : BaseIntegrationTest() {
         } catch (e: HttpClientResponseException) {
             assertEquals(HttpStatus.NOT_FOUND, e.status, "Expected 404 Not Found")
         }
-
     }
 
     @Test
@@ -111,13 +107,14 @@ class StudentControllerTest : BaseIntegrationTest() {
         studentPersistentFactory.create(
             id = studentId,
             firstName = "Harry",
-            lastName = "Potter"
+            lastName = "Potter",
         )
 
-        val command = UpdateStudentCommand(
-            firstName = "Scarlett",
-            lastName = "Evans",
-        )
+        val command =
+            UpdateStudentCommand(
+                firstName = "Scarlett",
+                lastName = "Evans",
+            )
 
         val (response, student) = patch<Student>("/students/$studentId", objectMapper.writeValueAsString(command))
 
@@ -130,17 +127,17 @@ class StudentControllerTest : BaseIntegrationTest() {
     @Test
     fun `should return 404 when the updating student does not exist`() {
         val notFundId = 999L
-        val command = UpdateStudentCommand(
-            firstName = "Scarlett",
-            lastName = "Evans",
-        )
+        val command =
+            UpdateStudentCommand(
+                firstName = "Scarlett",
+                lastName = "Evans",
+            )
 
         try {
-            patch<Student>("/students/$notFundId", objectMapper.writeValueAsString(command) )
+            patch<Student>("/students/$notFundId", objectMapper.writeValueAsString(command))
             fail("Expected HttpClientResponseException to be thrown")
         } catch (e: HttpClientResponseException) {
             assertEquals(HttpStatus.NOT_FOUND, e.status, "Expected 404 Not Found")
         }
-
     }
 }

@@ -8,14 +8,17 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import la.pomelo.testing.config.UnitTest
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-class StudentServiceTest: UnitTest() {
+class StudentServiceTest : UnitTest() {
     @MockK
     lateinit var studentRepository: StudentRepository
+
     @MockK
     lateinit var studentFactory: StudentFactory
 
@@ -28,23 +31,25 @@ class StudentServiceTest: UnitTest() {
 
     @Test
     fun `test create student`() {
-        val command = CreateStudentCommand(
-            firstName = "Scarlett",
-            lastName = "Evans",
-            dateOfBirth = LocalDate.parse("2010-05-01"),
-            grade = 5,
-            phone = "+111111111",
-            email = "scarlet@email.com"
-        )
-        val student = Student(
-            id = 1L,
-            firstName = "Scarlett",
-            lastName = "Evans",
-            dateOfBirth = LocalDate.parse("2010-05-01"),
-            grade = 5,
-            phone = "+111111111",
-            email = "scarlet@email.com"
-        )
+        val command =
+            CreateStudentCommand(
+                firstName = "Scarlett",
+                lastName = "Evans",
+                dateOfBirth = LocalDate.parse("2010-05-01"),
+                grade = 5,
+                phone = "+111111111",
+                email = "scarlet@email.com",
+            )
+        val student =
+            Student(
+                id = 1L,
+                firstName = "Scarlett",
+                lastName = "Evans",
+                dateOfBirth = LocalDate.parse("2010-05-01"),
+                grade = 5,
+                phone = "+111111111",
+                email = "scarlet@email.com",
+            )
 
         every { studentRepository.create(student) } returns student
         every { studentFactory.buildStudent(command) } returns student
@@ -59,10 +64,11 @@ class StudentServiceTest: UnitTest() {
 
     @Test
     fun `test get all students`() {
-        val students = listOf(
-            Student(1L, "Scarlett", "Evans", LocalDate.parse("2010-05-01"), 5, "+111111111", "scarlet@email.com"),
-            Student(2L, "Matias", "Martin", LocalDate.parse("2011-06-01"), 6, "+222222222", "matias@email.com")
-        )
+        val students =
+            listOf(
+                Student(1L, "Scarlett", "Evans", LocalDate.parse("2010-05-01"), 5, "+111111111", "scarlet@email.com"),
+                Student(2L, "Matias", "Martin", LocalDate.parse("2011-06-01"), 6, "+222222222", "matias@email.com"),
+            )
 
         every { studentRepository.findAll() } returns students
         val result = studentService.getAllStudents()
@@ -76,15 +82,16 @@ class StudentServiceTest: UnitTest() {
     @Test
     fun `test get student by id`() {
         val studentId = 1L
-        val student = Student(
-            studentId,
-            "Scarlett",
-            "Evans",
-            LocalDate.parse("2010-05-01"),
-            5,
-            "+111111111",
-            "scarlet@email.com"
-        )
+        val student =
+            Student(
+                studentId,
+                "Scarlett",
+                "Evans",
+                LocalDate.parse("2010-05-01"),
+                5,
+                "+111111111",
+                "scarlet@email.com",
+            )
 
         every { studentRepository.findById(studentId) } returns student
         val result = studentService.getStudentById(studentId)
@@ -97,15 +104,16 @@ class StudentServiceTest: UnitTest() {
     @Test
     fun `test update student`() {
         val studentId = 1L
-        val existingStudent = Student(
-            studentId,
-            "Scarlett",
-            "Evans",
-            LocalDate.parse("2010-05-01"),
-            5,
-            "+111111111",
-            "scarlet@email.com"
-        )
+        val existingStudent =
+            Student(
+                studentId,
+                "Scarlett",
+                "Evans",
+                LocalDate.parse("2010-05-01"),
+                5,
+                "+111111111",
+                "scarlet@email.com",
+            )
         val updateCommand = UpdateStudentCommand(firstName = "Scarlett Updated")
         val updatedStudent = existingStudent.copy(firstName = "Scarlett Updated")
 

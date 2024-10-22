@@ -9,12 +9,10 @@ import jakarta.inject.Singleton
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
-
 import java.time.LocalDate
 
 @Singleton
 class StudentPersistentFactory {
-
     @Inject
     lateinit var dynamoClient: DynamoDbClient
 
@@ -33,11 +31,12 @@ class StudentPersistentFactory {
         phone: String? = "+1111111",
         email: String? = "scarlet@email.com",
     ): Student {
-        val table = DynamoDbEnhancedClient
-            .builder()
-            .dynamoDbClient(dynamoClient)
-            .build()
-            .table(tableName, TableSchema.fromBean(StudentEntity::class.java))
+        val table =
+            DynamoDbEnhancedClient
+                .builder()
+                .dynamoDbClient(dynamoClient)
+                .build()
+                .table(tableName, TableSchema.fromBean(StudentEntity::class.java))
 
         val entity =
             StudentEntity(
@@ -48,7 +47,7 @@ class StudentPersistentFactory {
                 birthDate = dateOfBirth.toString(),
                 grade = grade,
                 phone = phone,
-                email = email
+                email = email,
             )
 
         table.putItem(entity)

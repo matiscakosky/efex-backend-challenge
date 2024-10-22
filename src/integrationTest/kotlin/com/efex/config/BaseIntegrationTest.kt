@@ -29,7 +29,6 @@ import software.amazon.awssdk.services.dynamodb.model.WriteRequest
 @MicronautTest(environments = ["integration"])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class BaseIntegrationTest : TestPropertyProvider {
-
     companion object {
         private const val WEB_SERVER_PORT = 3055
         private const val LOCALSTACK_SCRIPTS_HOST_PATH = "./src/main/resources/localstack/scripts"
@@ -38,10 +37,10 @@ abstract class BaseIntegrationTest : TestPropertyProvider {
                 .withServices(LocalStackContainer.Service.DYNAMODB)
                 .withReuse(true)
                 .withFileSystemBind(LOCALSTACK_SCRIPTS_HOST_PATH, "/etc/localstack/init/ready.d", BindMode.READ_ONLY)
+
         init {
             localStackContainer.start()
         }
-
     }
 
     @Value("\${aws.dynamo.tables.students.name}")
@@ -87,51 +86,65 @@ abstract class BaseIntegrationTest : TestPropertyProvider {
         resetEnvironment(dynamoClient, resourcesTableName)
     }
 
-    fun resetEnvironment(dynamoDbClient: DynamoDbClient, vararg tables: String) {
+    fun resetEnvironment(
+        dynamoDbClient: DynamoDbClient,
+        vararg tables: String,
+    ) {
         tables.forEach {
             truncateDynamoTable(dynamoDbClient, it)
         }
     }
 
-    private fun truncateDynamoTable(dynamoDbClient: DynamoDbClient, tableName: String) {
+    private fun truncateDynamoTable(
+        dynamoDbClient: DynamoDbClient,
+        tableName: String,
+    ) {
         val scanResponse = dynamoDbClient.scanPaginator(ScanRequest.builder().tableName(tableName).build())
 
         // DynamoDB limits to 25 items per batch, don't increase this value
         scanResponse.flatMap { it.items() }.chunked(25).forEach { chunk ->
-            val writeRequests = chunk.map { item ->
-                val key = mapOf("pk" to item["pk"], "sk" to item["sk"])
-                WriteRequest.builder()
-                    .deleteRequest(DeleteRequest.builder().key(key).build())
-                    .build()
-            }
+            val writeRequests =
+                chunk.map { item ->
+                    val key = mapOf("pk" to item["pk"], "sk" to item["sk"])
+                    WriteRequest
+                        .builder()
+                        .deleteRequest(DeleteRequest.builder().key(key).build())
+                        .build()
+                }
 
-            val batchWriteRequest = BatchWriteItemRequest.builder()
-                .requestItems(mapOf(tableName to writeRequests))
-                .build()
+            val batchWriteRequest =
+                BatchWriteItemRequest
+                    .builder()
+                    .requestItems(mapOf(tableName to writeRequests))
+                    .build()
 
             dynamoDbClient.batchWriteItem(batchWriteRequest)
         }
     }
 
-    val defaultHeaders = mapOf(
-        HttpHeaders.AUTHORIZATION to "Bearer 1234",
-    )
+    val defaultHeaders =
+        mapOf(
+            HttpHeaders.AUTHORIZATION to "Bearer 1234",
+        )
 
     protected inline fun <reified T> post(
         url: String,
         requestBody: String,
         headers: Map<String, String> = defaultHeaders,
     ): Pair<HttpResponse<String>, T> {
-        val request = HttpRequest.POST(url, requestBody)
-            .also {
-                headers.entries.forEach { header ->
-                    it.header(header.key, header.value)
+        val request =
+            HttpRequest
+                .POST(url, requestBody)
+                .also {
+                    headers.entries.forEach { header ->
+                        it.header(header.key, header.value)
+                    }
                 }
-            }
 
-        val httpResponse = baseHttpClient
-            .toBlocking()
-            .exchange(request, Argument.of(String::class.java), Argument.of(String::class.java))
+        val httpResponse =
+            baseHttpClient
+                .toBlocking()
+                .exchange(request, Argument.of(String::class.java), Argument.of(String::class.java))
 
         val responseBody = objectMapper.readValue<T>(httpResponse.body.get())
 
@@ -142,16 +155,19 @@ abstract class BaseIntegrationTest : TestPropertyProvider {
         url: String,
         headers: Map<String, String> = defaultHeaders,
     ): Pair<HttpResponse<String>, T> {
-        val request = HttpRequest.GET<Any>(url)
-            .also {
-                headers.entries.forEach { header ->
-                    it.header(header.key, header.value)
+        val request =
+            HttpRequest
+                .GET<Any>(url)
+                .also {
+                    headers.entries.forEach { header ->
+                        it.header(header.key, header.value)
+                    }
                 }
-            }
 
-        val httpResponse = baseHttpClient
-            .toBlocking()
-            .exchange(request, Argument.of(String::class.java), Argument.of(String::class.java))
+        val httpResponse =
+            baseHttpClient
+                .toBlocking()
+                .exchange(request, Argument.of(String::class.java), Argument.of(String::class.java))
 
         val responseBody = objectMapper.readValue<T>(httpResponse.body.get())
 
@@ -163,16 +179,19 @@ abstract class BaseIntegrationTest : TestPropertyProvider {
         requestBody: String,
         headers: Map<String, String> = defaultHeaders,
     ): Pair<HttpResponse<String>, T> {
-        val request = HttpRequest.PATCH(url, requestBody)
-            .also {
-                headers.entries.forEach { header ->
-                    it.header(header.key, header.value)
+        val request =
+            HttpRequest
+                .PATCH(url, requestBody)
+                .also {
+                    headers.entries.forEach { header ->
+                        it.header(header.key, header.value)
+                    }
                 }
-            }
 
-        val httpResponse = baseHttpClient
-            .toBlocking()
-            .exchange(request, Argument.of(String::class.java), Argument.of(String::class.java))
+        val httpResponse =
+            baseHttpClient
+                .toBlocking()
+                .exchange(request, Argument.of(String::class.java), Argument.of(String::class.java))
 
         val responseBody = objectMapper.readValue<T>(httpResponse.body.get())
 
@@ -181,8 +200,10 @@ abstract class BaseIntegrationTest : TestPropertyProvider {
 
     override fun getProperties(): MutableMap<String, String> =
         mutableMapOf(
-            "aws.dynamo.endpoint" to localStackContainer.getEndpointOverride(LocalStackContainer.Service.DYNAMODB)
-                .toString(),
+            "aws.dynamo.endpoint" to
+                localStackContainer
+                    .getEndpointOverride(LocalStackContainer.Service.DYNAMODB)
+                    .toString(),
             "services.products.base-url" to "http://localhost:$WEB_SERVER_PORT",
             "services.financial-indicators.base-url" to "http://localhost:$WEB_SERVER_PORT",
             "auth0.issuers.B2B" to "http://localhost:$WEB_SERVER_PORT",
