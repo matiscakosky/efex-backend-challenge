@@ -1,7 +1,7 @@
 <configuration>
     <logger name="io.micronaut.security" level="${FRAMEWORK_LOG_LEVEL:-info}"/>
     <logger name="io.micronaut.context.condition" level="${FRAMEWORK_LOG_LEVEL:-info}"/>
-    <logger name="io.micronaut.http.client" level="${FRAMEWORK_LOG_LEVEL:-debug}"/>
+    <logger name="io.micronaut.http.client" level="${FRAMEWORK_LOG_LEVEL:-info}"/>
 
     <appender name="LOCAL" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type
@@ -12,7 +12,7 @@
         </encoder>
     </appender>
 
-    <root level="${LOG_LEVEL:-debug}">
+    <root level="${LOG_LEVEL:-info}">
         <appender-ref ref="${LOG_APPENDER:-LOCAL}"/>
     </root>
 </configuration>
