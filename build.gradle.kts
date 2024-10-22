@@ -58,6 +58,10 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion")
 
+    // Dependency injection
+    implementation("jakarta.annotation:jakarta.annotation-api")
+    implementation("jakarta.validation:jakarta.validation-api:3.1.0")
+
     // Micronaut
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut:micronaut-http-client")

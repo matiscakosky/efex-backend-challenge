@@ -8,15 +8,21 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
+import io.micronaut.validation.Validated
 import jakarta.inject.Inject
+import jakarta.validation.Valid
 
+@Validated
 @Secured(SecurityRule.IS_ANONYMOUS)
 @Controller("/students")
 class StudentController(@Inject val studentService: StudentService) {
 
     @Post
-    fun create(@Body student: CreateStudentCommand): HttpResponse<Student> {
-        val createdStudent = studentService.createStudent(student)
+    fun create(
+        @Valid @Body
+        command: CreateStudentCommand
+    ): HttpResponse<Student> {
+        val createdStudent = studentService.createStudent(command)
         return HttpResponse.created(createdStudent)
     }
 
@@ -26,7 +32,7 @@ class StudentController(@Inject val studentService: StudentService) {
     }
 
     @Get("/{id}")
-    fun get(@PathVariable id: Long): HttpResponse<Student> {
+    fun get(@PathVariable id: String): HttpResponse<Student> {
         val student = studentService.getStudentById(id)
         return if (student != null) HttpResponse.ok(student) else HttpResponse.notFound()
     }
