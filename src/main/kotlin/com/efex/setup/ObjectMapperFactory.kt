@@ -18,21 +18,21 @@ import java.math.BigDecimal
 
 @Factory
 class ObjectMapperFactory {
-
     @Replaces(ObjectMapper::class)
     @Bean
     @Inject
     fun objectMapper(): ObjectMapper {
-        val mapper = jacksonObjectMapper()
-            .registerModule(JavaTimeModule())
-            .registerModule(KotlinModule.Builder().build())
-            .setDefaultLeniency(false)
-            .setSerializationInclusion(JsonInclude.Include.ALWAYS)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
-            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-            .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
-            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+        val mapper =
+            jacksonObjectMapper()
+                .registerModule(JavaTimeModule())
+                .registerModule(KotlinModule.Builder().build())
+                .setDefaultLeniency(false)
+                .setSerializationInclusion(JsonInclude.Include.ALWAYS)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
+                .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
 
         mapper.configOverride(BigDecimal::class.java).format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING)
         return mapper

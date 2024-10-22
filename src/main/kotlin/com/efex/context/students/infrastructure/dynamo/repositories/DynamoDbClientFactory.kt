@@ -23,11 +23,11 @@ internal class DynamoDbClientFactory {
         @Property(name = "aws.region") region: String,
         @Property(name = "aws.accessKeyId") accessKey: String,
         @Property(name = "aws.secretKey") secretKey: String,
-    ): DynamoDbClient {
-        return DynamoDbClient.builder()
+    ): DynamoDbClient =
+        DynamoDbClient
+            .builder()
             .region(Region.of(region))
             .endpointOverride(URI.create(endpoint))
             .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
             .build()
-    }
 }

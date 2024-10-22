@@ -10,7 +10,5 @@ data class UpdateStudentCommand(
     val dateOfBirth: LocalDate? = null,
     val grade: Int? = null,
     val phone: String? = null,
-    val email: String? = null
-) {
-
-}
+    val email: String? = null,
+)

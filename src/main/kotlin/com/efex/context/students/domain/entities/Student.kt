@@ -9,5 +9,5 @@ data class Student(
     val dateOfBirth: LocalDate,
     val grade: Int,
     val phone: String,
-    val email: String
+    val email: String,
 )

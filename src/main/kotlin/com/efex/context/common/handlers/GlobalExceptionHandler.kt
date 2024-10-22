@@ -8,14 +8,14 @@ import jakarta.validation.ConstraintViolationException
 
 @Controller
 class GlobalExceptionHandler {
-
     @Error(global = true)
     fun handleConstraintViolation(
         request: HttpRequest<*>,
-        exception: ConstraintViolationException
+        exception: ConstraintViolationException,
     ): HttpResponse<JsonError> {
-        val violations = exception.constraintViolations
-            .joinToString(", ") { "${it.propertyPath.last().name}: ${it.message}" }
+        val violations =
+            exception.constraintViolations
+                .joinToString(", ") { "${it.propertyPath.last().name}: ${it.message}" }
 
         val error = JsonError("Validation failed: $violations")
         return HttpResponse.badRequest(error)

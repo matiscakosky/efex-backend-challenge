@@ -19,12 +19,12 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 class DynamoStudentsRepository(
     @Property(name = "aws.dynamo.tables.students.name") private val tableName: String,
     @Inject private val client: DynamoDbClient,
-    private val studentMapper: StudentEntityMapper
+    private val studentMapper: StudentEntityMapper,
 ) : StudentRepository {
-
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(StudentRepository::class.java)
     }
+
     private val enhancedClient by lazy { DynamoDbEnhancedClient.builder().dynamoDbClient(client).build() }
     private val schema by lazy { TableSchema.fromBean(StudentEntity::class.java) }
     private val table by lazy { enhancedClient.table(tableName, schema) }
@@ -35,23 +35,32 @@ class DynamoStudentsRepository(
         return student.copy(id = student.id)
     }
 
-    override fun findAll(): List<Student> {
-        return this.table.scan().items().map { studentMapper.toDomain(it) }
-    }
+    override fun findAll(): List<Student> =
+        this.table
+            .scan()
+            .items()
+            .map { studentMapper.toDomain(it) }
 
     override fun findById(id: Long): Student? {
         logger.info("about to retrieve student for id = $id")
 
-        return table.query(
-            QueryConditional.keyEqualTo(
-                Key.builder()
-                    .partitionValue(StudentEntity.buildPk(id))
-                    .build(),
-            ),
-        ).items().map { studentMapper.toDomain(it) }.firstOrNull()
+        return table
+            .query(
+                QueryConditional.keyEqualTo(
+                    Key
+                        .builder()
+                        .partitionValue(StudentEntity.buildPk(id))
+                        .build(),
+                ),
+            ).items()
+            .map { studentMapper.toDomain(it) }
+            .firstOrNull()
     }
 
-    override fun update(id: Long, student: Student): Student? {
+    override fun update(
+        id: Long,
+        student: Student,
+    ): Student? {
         val updatedEntity = studentMapper.toEntity(student)
         this.table.updateItem(updatedEntity)
         return studentMapper.toDomain(updatedEntity)

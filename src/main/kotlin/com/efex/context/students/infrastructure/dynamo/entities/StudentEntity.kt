@@ -24,7 +24,7 @@ class StudentEntity(
     @get:DynamoDbAttribute(ATT_PHONE)
     var phone: String? = null,
     @get:DynamoDbAttribute(ATT_EMAIL)
-    var email: String? = null
+    var email: String? = null,
 ) {
     companion object {
         private const val ATT_FIRST_NAME = "first_name"
@@ -37,6 +37,7 @@ class StudentEntity(
         private const val SORT_KEY_PREFIX = "STUDENT#"
 
         fun buildPk(pk: Long) = "$PARTITION_KEY_PREFIX$pk"
+
         fun buildSk(sk: Long) = "$SORT_KEY_PREFIX$sk"
     }
 }

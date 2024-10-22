@@ -9,7 +9,6 @@ import org.mapstruct.Named
 
 @Mapper(componentModel = "jsr330")
 abstract class StudentEntityMapper {
-
     @Mappings(
         Mapping(source = "id", target = "pk", qualifiedByName = ["buildPk"]),
         Mapping(source = "id", target = "sk", qualifiedByName = ["buildSk"]),
@@ -29,17 +28,11 @@ abstract class StudentEntityMapper {
     abstract fun toDomain(entity: StudentEntity): Student
 
     @Named("buildPk")
-    fun buildPk(id: Long): String {
-        return StudentEntity.buildPk(id)
-    }
+    fun buildPk(id: Long): String = StudentEntity.buildPk(id)
 
     @Named("buildSk")
-    fun buildSk(id: Long): String {
-        return StudentEntity.buildSk(id)
-    }
+    fun buildSk(id: Long): String = StudentEntity.buildSk(id)
 
     @Named("buildId")
-    fun buildId(pk: String): Long {
-        return pk.split("#").last().toLong()
-    }
+    fun buildId(pk: String): Long = pk.split("#").last().toLong()
 }

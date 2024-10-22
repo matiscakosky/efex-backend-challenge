@@ -186,14 +186,6 @@ tasks {
         useJUnitPlatform()
     }
 
-    lintKotlinMain {
-        exclude("**/migrations/**")
-    }
-
-    formatKotlinMain {
-        exclude("**/migrations/**")
-    }
-
     test {
         finalizedBy(jacocoTestReport)
         maxParallelForks = Runtime.getRuntime().availableProcessors()
@@ -207,6 +199,12 @@ tasks {
             xml.required.set(true)
             html.required.set(true)
         }
+    }
+}
+
+tasks {
+    named("build") {
+        dependsOn("formatKotlin")
     }
 }
 

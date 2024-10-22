@@ -12,17 +12,14 @@ class StudentFactory(
     @Inject private val studentRepository: StudentRepository,
     @Inject private val incrementalRepository: DynamoIncrementalRepository,
 ) {
-
-    fun buildStudent(command: CreateStudentCommand): Student{
-        return Student(
+    fun buildStudent(command: CreateStudentCommand): Student =
+        Student(
             id = incrementalRepository.getNextId(),
             firstName = command.firstName!!,
             lastName = command.lastName!!,
             dateOfBirth = command.dateOfBirth!!,
             email = command.email!!,
             grade = command.grade!!,
-            phone = command.phone!!
+            phone = command.phone!!,
         )
-    }
-
 }
