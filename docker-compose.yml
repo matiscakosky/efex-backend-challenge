@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  micronaut-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - localstack
+    environment:
+      FRAMEWORK_LOG_LEVEL: warn
+      LOG_LEVEL: info
+
+  localstack:
+    image: localstack/localstack:3.2.0
+    environment:
+      - SERVICES=dynamodb
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - USE_SINGLE_REGION=1
+      - DEFAULT_REGION=us-east-1
+      - DEBUG=1
+      - HOSTNAME_EXTERNAL=localstack
+      - PERSISTENCE=1
+    ports:
+      - '4566:4566'
+      - '8055:8080'
+    volumes:
+      - './.localstack:/var/lib/localstack'
+      - './src/main/resources/localstack/scripts:/etc/localstack/init/ready.d'
+      - '/var/run/docker.sock:/var/run/docker.sock'
