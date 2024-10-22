@@ -18,6 +18,7 @@ val logbackClassicVersion = "1.5.10"
 val mapstructVersion = "1.6.2"
 val micronautVersion = "4.0.0"
 val jacksonModuleKotlinVersion = "2.14.2"
+val ioMockkVersion = "1.13.13"
 //endregion
 
 repositories {
@@ -93,6 +94,7 @@ dependencies {
     implementation("io.getunleash:unleash-client-java:9.2.4")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:localstack")
+    testImplementation("io.mockk:mockk:$ioMockkVersion")
 }
 
 application {
@@ -133,30 +135,6 @@ val integrationTest = task<Test>("integrationTest") {
 
     shouldRunAfter("test")
 }
-
-val integrationTestReport = task<JacocoReport>("integrationTestReport") {
-    description = "Generates coverage for integration tests."
-    group = "reporting"
-
-    executionData(integrationTest)
-    additionalSourceDirs(project.files(project.sourceSets["main"].allSource.srcDirs))
-    additionalClassDirs(project.sourceSets["main"].output)
-
-    mustRunAfter(integrationTest)
-    reports {
-        html.outputLocation.set(project.reporting.file("jacoco/integrationTest/html"))
-        html.required.set(true)
-        xml.outputLocation.set(project.reporting.file("jacoco/integrationTest/jacocoTestReport.xml"))
-        xml.required.set(true)
-    }
-
-    doLast {
-        val path = reports.html.outputLocation.get().asFile.toURI().path
-        println("See integration report at: file://${path}index.html")
-    }
-}
-integrationTest.finalizedBy(integrationTestReport)
-integrationTest.dependsOn(cleanYamlDoc)
 
 val fullReport = task<JacocoReport>("fullReport") {
     description = "Generates coverage for the whole test suites"

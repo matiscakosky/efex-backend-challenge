@@ -1,0 +1,15 @@
+micronaut:
+  application:
+    name: efex-backend-challenge
+  validation:
+    enabled: false
+
+aws:
+  region: us-east-1
+  accessKeyId: aws-local-key
+  secretKey: aws-local-secret-key
+
+netty:
+  default:
+    allocator:
+      max-order: 3
