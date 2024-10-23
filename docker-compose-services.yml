@@ -31,3 +31,10 @@ services:
     volumes:
       - ./docs/openapi.yaml:/openapi.yaml
     command: npx @redocly/cli preview-docs openapi.yaml --host 0.0.0.0
+
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin:4.6.1
+    ports:
+      - "8001:8001"
+    environment:
+      - DYNAMO_ENDPOINT=http://localstack:4566
