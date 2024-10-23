@@ -45,7 +45,7 @@ export aws.dynamo.endpoint=http://localstack:4566
 ### Pruebas Locales
 
 Añadí una colección de Postman para facilitar las pruebas. La misma está configurada para apuntar al host localhost y a los puertos mencionados arriba.
-Se puede descargar aquí
+Se puede descargar [aquí](https://github.com/matiscakosky/efex-backend-challenge/blob/a5385b55fa2f8bc06919b34fec626c2c8c50dcb6/postman_collection.json)
 
 ### Pruebas Locales
 
