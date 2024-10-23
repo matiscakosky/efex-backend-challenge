@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  micronaut-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - localstack
+    environment:
+      - aws.region=us-east-1
+      - aws.accessKeyId=aws-local-key
+      - aws.secretKey=aws-local-secret-key
+      - aws.dynamo.endpoint=http://localstack:4566
+
+  localstack:
+    image: localstack/localstack:3.2.0
+    environment:
+      - SERVICES=dynamodb
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - USE_SINGLE_REGION=1
+      - DEFAULT_REGION=us-east-1
+      - DEBUG=1
+      - HOSTNAME_EXTERNAL=localstack
+      - PERSISTENCE=1
+    ports:
+      - '4566:4566'
+      - '8055:8080'
+    volumes:
+      - './.localstack:/var/lib/localstack'
+      - './src/main/resources/localstack/scripts:/etc/localstack/init/ready.d'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+
+  redoc:
+    build:
+      context: ./docs
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./docs/openapi.yaml:/openapi.yaml
+    command: npx @redocly/cli preview-docs openapi.yaml --host 0.0.0.0
+
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin:4.6.1
+    ports:
+      - "8001:8001"
+    environment:
+      - DYNAMO_ENDPOINT=http://localstack:4566

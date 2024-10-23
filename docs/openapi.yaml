@@ -1,0 +1,188 @@
+openapi: 3.0.1
+info:
+  title: "efex-backend-challenge"
+  description: "API para gestionar estudiantes en la plataforma efex. Esta API permite crear, obtener y actualizar información de estudiantes de manera sencilla y eficiente."
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: "Servidor local para desarrollo"
+
+paths:
+  /students:
+    get:
+      summary: "Obtener la lista de estudiantes"
+      responses:
+        '200':
+          description: "Lista de estudiantes"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    firstName:
+                      type: string
+                      example: "Scarlett"
+                    lastName:
+                      type: string
+                      example: "Evans"
+                    dateOfBirth:
+                      type: string
+                      format: date
+                      example: "2010-05-01"
+                    grade:
+                      type: integer
+                      example: 5
+                    phone:
+                      type: string
+                      example: "+111111111"
+                    email:
+                      type: string
+                      example: "scarlet@email.com"
+                additionalItems:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 2
+                    firstName:
+                      type: string
+                      example: "Liam"
+                    lastName:
+                      type: string
+                      example: "Johnson"
+                    dateOfBirth:
+                      type: string
+                      format: date
+                      example: "2011-04-20"
+                    grade:
+                      type: integer
+                      example: 4
+                    phone:
+                      type: string
+                      example: "+222222222"
+                    email:
+                      type: string
+                      example: "liam@email.com"
+
+    post:
+      summary: "Agregar un nuevo estudiante"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: "Scarlett"
+                lastName:
+                  type: string
+                  example: "Evans"
+                dateOfBirth:
+                  type: string
+                  format: date
+                  example: "2010-05-01"
+                grade:
+                  type: integer
+                  example: 5
+                phone:
+                  type: string
+                  example: "+111111111"
+                email:
+                  type: string
+                  example: "scarlet@email.com"
+      responses:
+        '201':
+          description: "Estudiante creado exitosamente"
+        '400':
+          description: "Error en los datos proporcionados"
+
+  /students/{id}:
+    get:
+      summary: "Obtener un estudiante específico"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "ID del estudiante"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Estudiante encontrado"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  firstName:
+                    type: string
+                    example: "Scarlett"
+                  lastName:
+                    type: string
+                    example: "Evans"
+                  dateOfBirth:
+                    type: string
+                    format: date
+                    example: "2010-05-01"
+                  grade:
+                    type: integer
+                    example: 5
+                  phone:
+                    type: string
+                    example: "+111111111"
+                  email:
+                    type: string
+                    example: "scarlet@email.com"
+        '404':
+          description: "Estudiante no encontrado"
+
+    put:
+      summary: "Actualizar un estudiante específico"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "ID del estudiante"
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: "Scarlett"
+                lastName:
+                  type: string
+                  example: "Evans"
+                dateOfBirth:
+                  type: string
+                  format: date
+                  example: "2010-05-01"
+                grade:
+                  type: integer
+                  example: 5
+                phone:
+                  type: string
+                  example: "+111111111"
+                email:
+                  type: string
+                  example: "scarlet@email.com"
+      responses:
+        '200':
+          description: "Estudiante actualizado exitosamente"
+        '404':
+          description: "Estudiante no encontrado"

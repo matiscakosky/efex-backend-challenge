@@ -1,0 +1,20 @@
+micronaut:
+  application:
+    name: efex-backend-challenge
+  validation:
+    enabled: true
+  server:
+    port: 8080
+
+logging:
+  level:
+    io.micronaut.http: info
+    io.micronaut: info
+
+aws:
+  dynamo:
+    tables:
+      students:
+        name: ${AWS_DYNAMO_TABLE_STUDENTS:students-local-table}
+      resources:
+        name: ${AWS_DYNAMO_TABLE_RESOURCES:resources-local-table}
