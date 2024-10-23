@@ -10,8 +10,10 @@ services:
     depends_on:
       - localstack
     environment:
-      FRAMEWORK_LOG_LEVEL: warn
-      LOG_LEVEL: info
+      - aws.region=us-east-1
+      - aws.accessKeyId=aws-local-key
+      - aws.secretKey=aws-local-secret-key
+      - aws.dynamo.endpoint=http://localstack:4566
 
   localstack:
     image: localstack/localstack:3.2.0
@@ -30,3 +32,13 @@ services:
       - './.localstack:/var/lib/localstack'
       - './src/main/resources/localstack/scripts:/etc/localstack/init/ready.d'
       - '/var/run/docker.sock:/var/run/docker.sock'
+
+  redoc:
+    build:
+      context: ./docs
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./docs/openapi.yaml:/openapi.yaml
+    command: npx @redocly/cli preview-docs openapi.yaml --host 0.0.0.0
