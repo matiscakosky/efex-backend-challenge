@@ -1,0 +1,62 @@
+{
+	"info": {
+		"_postman_id": "c2601404-02ce-4d92-9702-86559423b6b9",
+		"name": "efex-students-challenge-collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create first student",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Scarlett\",\n    \"last_name\": \"  \",\n    \"date_of_birth\": \"2010-05-01\",\n    \"grade\": 8,\n    \"phone\": \"+11111111111\",\n    \"email\": \"scarlet@email.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/students/"
+			},
+			"response": []
+		},
+		{
+			"name": "Get first student",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/students/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Get student not found",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Update first student",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Harry\",\n    \"last_name\": \"Potter\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/students/1"
+			},
+			"response": []
+		}
+	]
+}
