@@ -16,6 +16,8 @@ import io.micronaut.security.rules.SecurityRule
 import io.micronaut.validation.Validated
 import jakarta.inject.Inject
 import jakarta.validation.Valid
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 @Validated
 @Secured(SecurityRule.IS_ANONYMOUS)
@@ -23,11 +25,17 @@ import jakarta.validation.Valid
 class StudentController(
     @Inject val studentService: StudentService,
 ) {
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(StudentController::class.java)
+    }
+
     @Post
     fun create(
         @Valid @Body
         command: CreateStudentCommand,
     ): HttpResponse<Student> {
+        logger.info("about to create a new student")
+
         val createdStudent = studentService.createStudent(command)
         return HttpResponse.created(createdStudent)
     }
@@ -39,8 +47,16 @@ class StudentController(
     fun get(
         @PathVariable id: Long,
     ): HttpResponse<Student> {
+        logger.info("about to get student $id")
+
         val student = studentService.getStudentById(id)
-        return if (student != null) HttpResponse.ok(student) else HttpResponse.notFound()
+
+        if (student == null) {
+            logger.info("student $id not found")
+            return HttpResponse.notFound()
+        }
+
+        return HttpResponse.ok(student)
     }
 
     @Patch("/{id}")
@@ -48,7 +64,15 @@ class StudentController(
         @PathVariable id: Long,
         @Body command: UpdateStudentCommand,
     ): HttpResponse<Student> {
+        logger.info("about to update student $id")
+
         val updatedStudent = studentService.updateStudent(id, command)
-        return if (updatedStudent != null) HttpResponse.ok(updatedStudent) else HttpResponse.notFound()
+
+        if (updatedStudent == null) {
+            logger.info("student $id not found, there is no update")
+            return HttpResponse.notFound()
+        }
+
+        return HttpResponse.ok(updatedStudent)
     }
 }

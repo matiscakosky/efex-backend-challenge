@@ -3,9 +3,8 @@ package com.efex.context.students.infrastructure.dynamo.repositories
 import io.micronaut.context.annotation.Property
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey
@@ -19,11 +18,12 @@ class DynamoIncrementalRepository(
     @Property(name = "aws.dynamo.tables.resources.name") private val tableName: String,
     @Inject private val client: DynamoDbClient,
 ) {
-    private val enhancedClient by lazy { DynamoDbEnhancedClient.builder().dynamoDbClient(client).build() }
-    private val schema by lazy { TableSchema.fromBean(IncrementalEntity::class.java) }
-    private val table: DynamoDbTable<IncrementalEntity> by lazy { enhancedClient.table(tableName, schema) }
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(DynamoIncrementalRepository::class.java)
+    }
 
     fun getNextId(): Long {
+        logger.info("Increment version of next student")
         val key = IncrementalEntity()
 
         val updateRequest =
